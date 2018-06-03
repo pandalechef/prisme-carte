@@ -24,14 +24,8 @@ class App extends React.Component {
         cache.keys().then(requests =>
           requests.forEach(request =>
             caches.match(request).then(response => {
-              const header = response.headers;
               // tslint:disable-next-line:no-console
-              console.log("header ", header);
-
-              for (const key of header.keys()) {
-                // tslint:disable-next-line:no-console
-                console.log(key);
-              }
+              console.log("header ", response);
             })
           )
         )
