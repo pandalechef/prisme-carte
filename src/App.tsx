@@ -30,7 +30,7 @@ class App extends React.Component<IPropsInterface, IStateInterface> {
           <Map />
         </div>
         <h2>URL en cache</h2>
-        <ul>{this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}</ul>
+        <ol>{this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}</ol>
       </div>
     );
   }
