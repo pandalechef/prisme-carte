@@ -17,6 +17,10 @@ class App extends React.Component {
         // tslint:disable-next-line:no-console
         cache.keys().then(request => request.forEach(r => console.log(r)))
       );
+    caches
+      .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
+      // tslint:disable-next-line:no-console
+      .then(cache => console.log("taille: ", cache.keys.length));
     return (
       <div className="App">
         <header className="App-header">
