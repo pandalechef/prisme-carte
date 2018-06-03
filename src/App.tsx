@@ -2,43 +2,35 @@ import * as React from "react";
 import "./App.css";
 import logo from "./logo.svg";
 import Map from "./Map";
-
-class App extends React.Component {
+interface IStateInterface {
+  requests: Request[];
+}
+// tslint:disable-next-line:no-empty-interface
+interface IPropsInterface {}
+class App extends React.Component<IPropsInterface, IStateInterface> {
+  constructor(props: IPropsInterface) {
+    super(props);
+    this.state = { requests: [] };
+  }
   public render() {
-    // const cacheName =
-    //   "sw-precache-v3-sw-precache-https://prisme-carte.herokuapp.com/";
-    caches.keys().then(keyList => {
-      // tslint:disable-next-line:no-console
-      return Promise.all(keyList.map(key => console.log("clé ", key)));
-    });
     caches
       .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
       .then(cache =>
         // tslint:disable-next-line:no-console
-        cache.keys().then(request => request.forEach(r => console.log(r)))
+        cache.keys().then(requests => this.setState({ requests }))
       );
 
-    caches
-      .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
-      .then(cache =>
-        cache.keys().then(requests =>
-          requests.forEach(request =>
-            caches.match(request).then(response => {
-              // tslint:disable-next-line:no-console
-              console.log("header ", response);
-            })
-          )
-        )
-      );
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Test cartographie et cache</h1>
         </header>
         <div>
           <Map />
         </div>
+        <h2>URL en cache</h2>
+        <ul>{this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}</ul>
       </div>
     );
   }
