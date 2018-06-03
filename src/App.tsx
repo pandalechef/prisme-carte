@@ -23,8 +23,10 @@ class App extends React.Component {
       .then(cache =>
         cache.keys().then(requests =>
           requests.forEach(request =>
-            // tslint:disable-next-line:no-console
-            caches.match(request).then(response => console.log(response))
+            caches
+              .match(request)
+              // tslint:disable-next-line:no-console
+              .then(response => console.log(response.headers["content-length"]))
           )
         )
       );
