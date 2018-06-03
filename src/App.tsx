@@ -11,6 +11,12 @@ class App extends React.Component {
       // tslint:disable-next-line:no-console
       return Promise.all(keyList.map(key => console.log("clé ", key)));
     });
+    caches
+      .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
+      .then(cache =>
+        // tslint:disable-next-line:no-console
+        cache.keys().then(request => request.forEach(r => console.log(r)))
+      );
     return (
       <div className="App">
         <header className="App-header">
