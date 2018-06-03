@@ -25,6 +25,9 @@ class App extends React.Component {
           requests.forEach(request =>
             caches.match(request).then(response => {
               const header = response.headers;
+              // tslint:disable-next-line:no-console
+              console.log("taille ", header.get("Content-Length"));
+
               for (const key of header.keys()) {
                 // tslint:disable-next-line:no-console
                 console.log(key);
