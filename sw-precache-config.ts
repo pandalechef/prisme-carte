@@ -2,19 +2,19 @@ module.exports = {
   dontCacheBustUrlsMatching: /\.\w{8}\./,
   runtimeCaching: [
     {
-      handler: "cacheFirst",
+      handler: "fastest",
       urlPattern: /^https:\/\/unpkg.com/
     },
     {
-      handler: "cacheFirst",
+      handler: "fastest",
       urlPattern: /^https:\/\/a\.tile\.openstreetmap\.org/
     },
     {
-      handler: "cacheFirst",
+      handler: "fastest",
       urlPattern: /^https:\/\/b\.tile\.openstreetmap\.org/
     },
     {
-      handler: "cacheFirst",
+      handler: "fastest",
       urlPattern: /^https:\/\/c\.tile\.openstreetmap\.org/
     }
   ],

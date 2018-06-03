@@ -7,12 +7,12 @@
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-leaflet": "^1.9.1",
-    "react-scripts-ts": "2.16.0"
+    "react-scripts-ts": "2.16.0",
+    "react-sortable-hoc": "^0.8.3"
   },
   "scripts": {
     "start": "react-scripts-ts start",
-    "build":
-      "react-scripts-ts build && sw-precache --config=sw-precache-config.ts",
+    "build": "react-scripts-ts build && sw-precache --config=sw-precache-config.ts",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import SortableComponent from "src/Sortable";
 import "./App.css";
 import logo from "./logo.svg";
 import Map from "./Map";
@@ -36,9 +37,13 @@ class App extends React.Component<IPropsInterface, IStateInterface> {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Test cartographie et cache</h1>
         </header>
+        <br />
         <div>
+          <SortableComponent />
+          <br />
           <Map />
         </div>
+        <br />
         <button onClick={this.handleClick}>Vider le cache</button>
         <h2>URL en cache</h2>
         <ol>{this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}</ol>
