@@ -8,40 +8,88 @@ interface IPdvsInterface {
     lat: number;
     lng: number;
   }>;
+  positionCentre: [number, number];
 }
 
 // tslint:disable-next-line:no-empty-interface
-interface IState {}
+interface IState {
+  lat: number;
+  lng: number;
+}
 
 export default class SimpleExample extends React.Component<
   IPdvsInterface,
   IState
 > {
-  public state = {
-    lat: 48.8155,
-    lng: 2.317,
-    zoom: 17
+  public options = {
+    enableHighAccuracy: false,
+    maximumAge: 0,
+    timeout: 240000
   };
+
+  constructor(props: IPdvsInterface) {
+    super(props);
+    // tslint:disable-next-line:no-console
+    console.log(
+      "Au constructor valeur",
+      this.props.positionCentre[0],
+      this.props.positionCentre[1]
+    );
+    this.state = {
+      lat: this.props.positionCentre[0],
+      lng: this.props.positionCentre[1]
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  public componentWillUpdate(nextProps: IPdvsInterface, nextState: IState) {
+    nextState.lat = nextProps.positionCentre[0];
+    nextState.lng = nextProps.positionCentre[1];
+  }
+
+  public getPosition(options: PositionOptions) {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  }
+
+  public handleClick() {
+    this.getPosition(this.options).then((p: Position) => {
+      // tslint:disable-next-line:no-console
+      console.log("Position: ", p);
+      this.setState({ lat: p.coords.latitude, lng: p.coords.longitude });
+    });
+  }
 
   public render() {
     const position: [number, number] = [this.state.lat, this.state.lng];
 
+    // tslint:disable-next-line:no-console
+    console.log("Centre: ", position);
     return (
-      <Map center={position} zoom={this.state.zoom}>
-        <TileLayer
-          attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {this.props.pdvs.map((pdv, i) => (
-          <Marker key={i} position={{ lat: pdv.lat, lng: pdv.lng }}>
+      <>
+        <button onClick={this.handleClick}>Actualiser la position</button>
+        <Map center={position} zoom={17}>
+          <TileLayer
+            attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={{ lat: this.state.lat, lng: this.state.lng }}>
             <Tooltip permanent={true} direction="top">
-              <span>
-                n°{i + 1} {pdv.enseigne}
-              </span>
+              <span>Je suis là</span>
             </Tooltip>
           </Marker>
-        ))}
-      </Map>
+          {this.props.pdvs.map((pdv, i) => (
+            <Marker key={i} position={{ lat: pdv.lat, lng: pdv.lng }}>
+              <Tooltip permanent={true} direction="top">
+                <span>
+                  n°{i + 1} {pdv.enseigne}
+                </span>
+              </Tooltip>
+            </Marker>
+          ))}
+        </Map>
+      </>
     );
   }
 }

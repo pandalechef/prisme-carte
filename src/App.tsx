@@ -12,47 +12,89 @@ export interface IPdv {
 }
 export interface IMenu3State {
   pdvs: IPdv[];
-  requests: Request[];
+  positionCentre: [number, number];
 }
 
 // tslint:disable-next-line:no-empty-interface
 interface IPropsInterface {}
 class App extends React.Component<IPropsInterface, IMenu3State> {
+  public options = {
+    enableHighAccuracy: false,
+    maximumAge: 0,
+    timeout: 240000
+  };
+
   constructor(props: IPropsInterface) {
     super(props);
-    const pdv1 = {
-      adresse: "adresse1",
-      enseigne: "Carrefour",
-      lat: 48.816363,
-      lng: 2.317384
-    };
-    const pdv2 = {
-      adresse: "adresse2",
-      enseigne: "Auchan",
-      lat: 48.816363,
-      lng: 2.316384
-    };
-    const pdv3 = {
-      adresse: "adresse3",
-      enseigne: "Franprix",
-      lat: 48.816363,
-      lng: 2.315384
-    };
-    const pdv4 = {
-      adresse: "adresse4",
-      enseigne: "Intermarché",
-      lat: 48.815363,
-      lng: 2.317384
-    };
-    const pdv5 = {
-      adresse: "adresse5",
-      enseigne: "Super U",
-      lat: 48.814363,
-      lng: 2.317384
-    };
-    this.state = { pdvs: [pdv1, pdv2, pdv3, pdv4, pdv5], requests: [] };
+    this.state = { pdvs: [], positionCentre: [48.8155, 2.317] };
     this.handleClick = this.handleClick.bind(this);
     this.onMove = this.onMove.bind(this);
+  }
+
+  public getPosition(options: PositionOptions) {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  }
+
+  public getPdvsByCenter(altitude: number, longitude: number) {
+    return [
+      {
+        adresse: "adresse1",
+        enseigne: "Carrefour",
+        lat: altitude - 0.001,
+        lng: longitude - 0.001
+      },
+      {
+        adresse: "adresse2",
+        enseigne: "Auchan",
+        lat: altitude - 0.001,
+        lng: longitude + 0.001
+      },
+      {
+        adresse: "adresse3",
+        enseigne: "Franprix",
+        lat: altitude + 0.0001,
+        lng: longitude - 0.001
+      },
+      {
+        adresse: "adresse4",
+        enseigne: "Intermarché",
+        lat: altitude - 0.0003,
+        lng: longitude + 0.001
+      },
+      {
+        adresse: "adresse5",
+        enseigne: "Super U",
+        lat: altitude + 0.0007,
+        lng: longitude + 0.0007
+      }
+    ];
+  }
+
+  public componentDidMount() {
+    this.getPosition(this.options)
+      .then((position: Position) => {
+        const pdvsGeolocalise = this.getPdvsByCenter(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        // tslint:disable-next-line:no-console
+        console.log("Position: ", position);
+        this.setState({
+          pdvs: pdvsGeolocalise,
+          positionCentre: [position.coords.latitude, position.coords.longitude]
+        });
+      })
+      .catch(err => {
+        const pdvsGeolocalise = this.getPdvsByCenter(48.8155, 2.317);
+        // tslint:disable-next-line:no-console
+        console.log("Je suis en erreur");
+        this.setState({
+          pdvs: pdvsGeolocalise,
+          positionCentre: [48.8155, 2.317]
+        });
+      });
   }
 
   public onMove(pdvs: IPdv[]) {
@@ -69,11 +111,13 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
       );
   }
   public render() {
-    caches
-      .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
-      .then(cache =>
-        cache.keys().then(requests => this.setState({ requests }))
-      );
+    // caches
+    //   .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
+    //   .then(cache =>
+    //     cache.keys().then(requests => this.setState({ requests }))
+    //   );
+    // tslint:disable-next-line:no-console
+    console.log("Données positionCentre: ", this.state.positionCentre);
 
     return (
       <div className="App">
@@ -85,13 +129,14 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
         <div>
           <SortableComponent onMove={this.onMove} pdvs={this.state.pdvs} />
           <br />
-          <Map pdvs={this.state.pdvs} />
+          <Map
+            pdvs={this.state.pdvs}
+            positionCentre={this.state.positionCentre}
+          />
         </div>
         <br />
         <div>
           <button onClick={this.handleClick}>Vider le cache</button>
-          <h2>URL en cache</h2>
-          <ol>{this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}</ol>
         </div>
       </div>
     );
