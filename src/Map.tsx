@@ -1,11 +1,26 @@
 import React from "react";
-import { Map, Marker, Popup, TileLayer, Tooltip } from "react-leaflet";
+import { Map, Marker, TileLayer, Tooltip } from "react-leaflet";
 
-export default class SimpleExample extends React.Component {
+interface IPdvsInterface {
+  pdvs: Array<{
+    enseigne: string;
+    adresse: string;
+    lat: number;
+    lng: number;
+  }>;
+}
+
+// tslint:disable-next-line:no-empty-interface
+interface IState {}
+
+export default class SimpleExample extends React.Component<
+  IPdvsInterface,
+  IState
+> {
   public state = {
-    lat: 48.81645,
-    lng: 2.308,
-    zoom: 18
+    lat: 48.8155,
+    lng: 2.317,
+    zoom: 17
   };
 
   public render() {
@@ -17,16 +32,15 @@ export default class SimpleExample extends React.Component {
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            <span>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </span>
-          </Popup>
-          <Tooltip permanent={true}>
-            <span>Coucou</span>
-          </Tooltip>
-        </Marker>
+        {this.props.pdvs.map((pdv, i) => (
+          <Marker key={i} position={{ lat: pdv.lat, lng: pdv.lng }}>
+            <Tooltip permanent={true} direction="top">
+              <span>
+                n°{i + 1} {pdv.enseigne}
+              </span>
+            </Tooltip>
+          </Marker>
+        ))}
       </Map>
     );
   }
