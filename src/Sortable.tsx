@@ -6,7 +6,7 @@ import {
 } from "react-sortable-hoc";
 
 const SortableItem = SortableElement(({ value }: { value: IPdvInterface }) => (
-  <li>{value.enseigne}</li>
+  <li className="bordure">{value.enseigne}</li>
 ));
 
 const SortableList = SortableContainer(
