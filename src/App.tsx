@@ -26,7 +26,7 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
 
   constructor(props: IPropsInterface) {
     super(props);
-    this.state = { pdvs: [], positionCentre: [48.8155, 2.317] };
+    this.state = { pdvs: [], positionCentre: [0, 0] };
     this.handleClick = this.handleClick.bind(this);
     this.onMove = this.onMove.bind(this);
   }
@@ -72,15 +72,13 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
     ];
   }
 
-  public componentDidMount() {
+  public componentWillMount() {
     this.getPosition(this.options)
       .then((position: Position) => {
         const pdvsGeolocalise = this.getPdvsByCenter(
           position.coords.latitude,
           position.coords.longitude
         );
-        // tslint:disable-next-line:no-console
-        console.log("Position: ", position);
         this.setState({
           pdvs: pdvsGeolocalise,
           positionCentre: [position.coords.latitude, position.coords.longitude]
@@ -88,8 +86,6 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
       })
       .catch(err => {
         const pdvsGeolocalise = this.getPdvsByCenter(48.8155, 2.317);
-        // tslint:disable-next-line:no-console
-        console.log("Je suis en erreur");
         this.setState({
           pdvs: pdvsGeolocalise,
           positionCentre: [48.8155, 2.317]
@@ -116,9 +112,13 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
     //   .then(cache =>
     //     cache.keys().then(requests => this.setState({ requests }))
     //   );
-    // tslint:disable-next-line:no-console
-    console.log("Données positionCentre: ", this.state.positionCentre);
 
+    if (
+      this.state.positionCentre[0] === 0 &&
+      this.state.positionCentre[1] === 0
+    ) {
+      return "En cours de géolocalisation";
+    }
     return (
       <div className="App">
         <header className="App-header">

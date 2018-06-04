@@ -11,7 +11,6 @@ interface IPdvsInterface {
   positionCentre: [number, number];
 }
 
-// tslint:disable-next-line:no-empty-interface
 interface IState {
   lat: number;
   lng: number;
@@ -29,22 +28,11 @@ export default class SimpleExample extends React.Component<
 
   constructor(props: IPdvsInterface) {
     super(props);
-    // tslint:disable-next-line:no-console
-    console.log(
-      "Au constructor valeur",
-      this.props.positionCentre[0],
-      this.props.positionCentre[1]
-    );
     this.state = {
       lat: this.props.positionCentre[0],
       lng: this.props.positionCentre[1]
     };
     this.handleClick = this.handleClick.bind(this);
-  }
-
-  public componentWillUpdate(nextProps: IPdvsInterface, nextState: IState) {
-    nextState.lat = nextProps.positionCentre[0];
-    nextState.lng = nextProps.positionCentre[1];
   }
 
   public getPosition(options: PositionOptions) {
@@ -55,17 +43,12 @@ export default class SimpleExample extends React.Component<
 
   public handleClick() {
     this.getPosition(this.options).then((p: Position) => {
-      // tslint:disable-next-line:no-console
-      console.log("Position: ", p);
       this.setState({ lat: p.coords.latitude, lng: p.coords.longitude });
     });
   }
 
   public render() {
     const position: [number, number] = [this.state.lat, this.state.lng];
-
-    // tslint:disable-next-line:no-console
-    console.log("Centre: ", position);
     return (
       <>
         <button onClick={this.handleClick}>Actualiser la position</button>
