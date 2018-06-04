@@ -16,20 +16,26 @@ class App extends React.Component<IPropsInterface, IStateInterface> {
   }
 
   public handleClick() {
-    caches
-      .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
-      .then(cache =>
-        cache
-          .keys()
-          .then(requests => requests.forEach(request => cache.delete(request)))
-      );
+    if (caches) {
+      caches
+        .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
+        .then(cache =>
+          cache
+            .keys()
+            .then(requests =>
+              requests.forEach(request => cache.delete(request))
+            )
+        );
+    }
   }
   public render() {
-    caches
-      .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
-      .then(cache =>
-        cache.keys().then(requests => this.setState({ requests }))
-      );
+    if (caches) {
+      caches
+        .open("$$$toolbox-cache$$$https://prisme-carte.herokuapp.com/$$$")
+        .then(cache =>
+          cache.keys().then(requests => this.setState({ requests }))
+        );
+    }
 
     return (
       <div className="App">
@@ -44,9 +50,15 @@ class App extends React.Component<IPropsInterface, IStateInterface> {
           <Map />
         </div>
         <br />
-        <button onClick={this.handleClick}>Vider le cache</button>
-        <h2>URL en cache</h2>
-        <ol>{this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}</ol>
+        {caches && (
+          <div>
+            <button onClick={this.handleClick}>Vider le cache</button>
+            <h2>URL en cache</h2>
+            <ol>
+              {this.state.requests.map((r, i) => <li key={i}>{r.url}</li>)}
+            </ol>
+          </div>
+        )}
       </div>
     );
   }
