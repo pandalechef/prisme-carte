@@ -2,6 +2,7 @@ import L from "leaflet";
 import React from "react";
 import { Map, Marker, Popup, TileLayer, Tooltip } from "react-leaflet";
 import logoPinPerson from "./marker-pin-person.svg";
+import spinner from "./spinner.svg";
 
 interface IPdvsInterface {
   pdvs: Array<{
@@ -15,6 +16,7 @@ interface IPdvsInterface {
 }
 
 interface IState {
+  isLoading: boolean;
   lat: number;
   lng: number;
 }
@@ -38,6 +40,7 @@ export default class SimpleExample extends React.Component<
   constructor(props: IPdvsInterface) {
     super(props);
     this.state = {
+      isLoading: false,
       lat: this.props.positionCentre[0],
       lng: this.props.positionCentre[1]
     };
@@ -45,6 +48,7 @@ export default class SimpleExample extends React.Component<
   }
 
   public getPosition(options: PositionOptions) {
+    this.setState({ isLoading: true });
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject, options);
     });
@@ -52,7 +56,11 @@ export default class SimpleExample extends React.Component<
 
   public handleClick() {
     this.getPosition(this.options).then((p: Position) => {
-      this.setState({ lat: p.coords.latitude, lng: p.coords.longitude });
+      this.setState({
+        isLoading: false,
+        lat: p.coords.latitude,
+        lng: p.coords.longitude
+      });
     });
   }
 
@@ -60,7 +68,10 @@ export default class SimpleExample extends React.Component<
     const position: [number, number] = [this.state.lat, this.state.lng];
     return (
       <>
-        <button onClick={this.handleClick}>Actualiser la position</button>
+        <div>
+          <button onClick={this.handleClick}>Actualiser la position</button>
+          {this.state.isLoading && <img src={spinner} alt="logo" />}
+        </div>
         <br />
         <br />
         <Map center={position} zoom={17}>
