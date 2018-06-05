@@ -9,6 +9,7 @@ export interface IPdv {
   adresse: string;
   lat: number;
   lng: number;
+  nbReleve: number;
 }
 export interface IMenu3State {
   pdvs: IPdv[];
@@ -43,31 +44,36 @@ class App extends React.Component<IPropsInterface, IMenu3State> {
         adresse: "adresse1",
         enseigne: "Carrefour",
         lat: altitude - 0.001,
-        lng: longitude - 0.001
+        lng: longitude - 0.001,
+        nbReleve: 8
       },
       {
         adresse: "adresse2",
         enseigne: "Auchan",
         lat: altitude - 0.001,
-        lng: longitude + 0.001
+        lng: longitude + 0.001,
+        nbReleve: 19
       },
       {
         adresse: "adresse3",
         enseigne: "Franprix",
         lat: altitude + 0.0001,
-        lng: longitude - 0.001
+        lng: longitude - 0.001,
+        nbReleve: 12
       },
       {
         adresse: "adresse4",
         enseigne: "Intermarché",
         lat: altitude - 0.0003,
-        lng: longitude + 0.001
+        lng: longitude + 0.001,
+        nbReleve: 34
       },
       {
         adresse: "adresse5",
         enseigne: "Super U",
         lat: altitude + 0.0007,
-        lng: longitude + 0.0007
+        lng: longitude + 0.0007,
+        nbReleve: 46
       }
     ];
   }

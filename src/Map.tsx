@@ -1,5 +1,7 @@
+import L from "leaflet";
 import React from "react";
-import { Map, Marker, TileLayer, Tooltip } from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, Tooltip } from "react-leaflet";
+import logoPinPerson from "./marker-pin-person.svg";
 
 interface IPdvsInterface {
   pdvs: Array<{
@@ -7,6 +9,7 @@ interface IPdvsInterface {
     adresse: string;
     lat: number;
     lng: number;
+    nbReleve: number;
   }>;
   positionCentre: [number, number];
 }
@@ -25,6 +28,12 @@ export default class SimpleExample extends React.Component<
     maximumAge: 0,
     timeout: 240000
   };
+
+  public iconPerson = new L.Icon({
+    iconRetinaUrl: logoPinPerson,
+    iconSize: new L.Point(40, 55),
+    iconUrl: logoPinPerson
+  });
 
   constructor(props: IPdvsInterface) {
     super(props);
@@ -52,18 +61,26 @@ export default class SimpleExample extends React.Component<
     return (
       <>
         <button onClick={this.handleClick}>Actualiser la position</button>
+        <br />
+        <br />
         <Map center={position} zoom={17}>
           <TileLayer
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={{ lat: this.state.lat, lng: this.state.lng }}>
-            <Tooltip permanent={true} direction="top">
+          <Marker
+            position={{ lat: this.state.lat, lng: this.state.lng }}
+            icon={this.iconPerson}
+          >
+            <Popup>
               <span>Je suis là</span>
-            </Tooltip>
+            </Popup>
           </Marker>
           {this.props.pdvs.map((pdv, i) => (
             <Marker key={i} position={{ lat: pdv.lat, lng: pdv.lng }}>
+              <Popup>
+                <div>{pdv.nbReleve} relevés à faire</div>
+              </Popup>
               <Tooltip permanent={true} direction="top">
                 <span>
                   n°{i + 1} {pdv.enseigne}
